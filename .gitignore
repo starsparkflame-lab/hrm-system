@@ -1,0 +1,12 @@
+账号.txt
+springboot/logs/
+操作日志/
+.idea/
+.vscode/
+*.iml
+springboot/target/
+vue/node_modules/
+vue/dist/
+*.log
+*.log.*.gz
+.DS_Store

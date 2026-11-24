@@ -1,0 +1,93 @@
+server:
+  port: 8888
+  tomcat:
+    remoteip:
+      host-header: X-Forwarded-Host
+
+spring:
+  # 配置数据源
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/db_hrm?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2b8
+    username: root
+    password: ${DB_PASSWORD:123456}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+
+  # Redis：热点数据缓存与业务状态管理
+  # 注意：Redis 未启动时项目仍可正常运行，CacheService 会自动降级为进程内本地缓存
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+    password:
+    # 连接/命令超时设短一些，保证 Redis 挂掉时请求能快速失败并触发降级，而不是长时间阻塞
+    timeout: 2000ms
+    connect-timeout: 2000ms
+    lettuce:
+      pool:
+        max-active: 16
+        max-idle: 8
+        min-idle: 0
+        max-wait: 2000ms
+      # 关闭时等待连接释放的时间，避免应用停止时卡住
+      shutdown-timeout: 100ms
+
+# 管理端点
+management:
+  health:
+    # Redis 宕机时不让 /actuator/health 整体变为 DOWN（缓存已降级，不影响业务可用性）
+    redis:
+      enabled: false
+
+#  mvc:
+#    path match:
+#      matching-strategy: ant-path-matcher
+
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  # 扫描通用枚举包
+  type-enums-package: com.cow.enums
+
+
+file:
+  upload:
+    path: D:/JavaEE/code/files/ # 文件存储位置D:\JavaEE\code\files
+
+# 操作日志文件输出：按天一个文件，落在项目根目录，便于在 IDEA 左侧项目树直接查看
+operlog:
+  file-dir: D:/JavaEE/code/操作日志/
+
+# 日志配置
+logging:
+  level:
+    root: INFO  # 根日志级别
+    com.cow: DEBUG  # 项目代码使用DEBUG级别
+    org.springframework.web: DEBUG  # Spring Web框架日志
+    org.mybatis: DEBUG  # MyBatis日志
+    com.baomidou.mybatisplus: DEBUG  # MyBatis-Plus日志
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n'  # 控制台日志格式
+    file: '%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n'  # 文件日志格式
+  file:
+    name: D:/JavaEE/code/springboot/logs/application.log  # 日志文件路径
+    max-size: 10MB  # 单个日志文件最大大小
+    max-history: 30  # 日志文件保留天数
+    total-size-cap: 1GB  # 日志文件总大小上限
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
